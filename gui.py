@@ -7,7 +7,12 @@ import util
 
 app_width = 1440
 app_height = 900
+
+# width, height
 target_image_size = (656, 410)
+
+# 163px represents 100m
+image_params = (163, 100)
 
 
 class App(tk.Tk):

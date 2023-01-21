@@ -32,11 +32,12 @@ def scale_image(image, target):
     return cv2.resize(image.copy(), scaled_dims, interpolation=cv2.INTER_AREA)
 
 
-def actual_area(image, distance, pixels):
-    input = image.shape[:2]
+def actual_area(image, image_params):
+    width, height = image.shape[:2]
+    pixels, distance = image_params
 
-    a_width = input[0] / pixels * distance
-    a_height = input[1] / pixels * distance
+    a_width = width / pixels * distance
+    a_height = height / pixels * distance
     sq_m_km = 1_000_000  # square m in square km
 
     return round((a_width * a_height) / sq_m_km, 2)
@@ -68,9 +69,9 @@ def mask_image(image, mask, color=(255, 255, 255)):
 
 
 def in_mask(image, area, mask):
-    input = image.shape[:2]
+    width, height = image.shape[:2]
 
-    img_pixels = input[0] * input[1]
+    img_pixels = width * height
     mask_pixels = cv2.countNonZero(mask)
 
     mask_percent = mask_pixels / img_pixels

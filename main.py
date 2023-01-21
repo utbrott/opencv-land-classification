@@ -11,8 +11,8 @@ mask_colors = {
 
 image = cv2.imread("images/image_13.jpg")
 
-# Get image real area (image, dist, px)
-area = util.actual_area(image, 100, 163)
+# Get image real area (image, (pixels, dist))
+area = util.actual_area(image, (163, 100))
 
 # Enhance the image
 enhanced = util.adaptive_histogram(image)
