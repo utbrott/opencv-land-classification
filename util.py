@@ -1,5 +1,24 @@
 import cv2
 import numpy as np
+from PIL import Image, ImageTk
+
+
+def load_image(path, with_scale=False, target_scale=(0, 0)):
+    image = cv2.imread(path)
+
+    if with_scale:
+        image = scale_image(image, target_scale)
+
+    return image_for_gui(image)
+
+
+def image_for_gui(image):
+    blue, green, red = cv2.split(image)
+    image = cv2.merge((red, green, blue))
+
+    # Make image
+    img = Image.fromarray(image)
+    return ImageTk.PhotoImage(img)
 
 
 def scale_image(image, target):
@@ -7,21 +26,17 @@ def scale_image(image, target):
 
     scaled_dims = (
         int(input[0] * (target[0] / input[0])),
-        int(input[1] * (target[1] / input[1]))
+        int(input[1] * (target[1] / input[1])),
     )
 
-    return cv2.resize(
-        image.copy(),
-        scaled_dims,
-        interpolation=cv2.INTER_AREA
-    )
+    return cv2.resize(image.copy(), scaled_dims, interpolation=cv2.INTER_AREA)
 
 
 def actual_area(image, distance, pixels):
     input = image.shape[:2]
 
-    a_width = (input[0] / pixels * distance)
-    a_height = (input[1] / pixels * distance)
+    a_width = input[0] / pixels * distance
+    a_height = input[1] / pixels * distance
     sq_m_km = 1_000_000  # square m in square km
 
     return round((a_width * a_height) / sq_m_km, 2)
