@@ -2,6 +2,22 @@ import cv2
 import numpy as np
 from PIL import Image, ImageTk
 
+mask_colors = {
+    "green": (87, 120, 4),
+    "gray": (70, 63, 63),
+}
+
+default_masks = {
+    "green_l": (36, 25, 25),
+    "green_h": (86, 255, 255),
+    "brown_l": (74, 74, 74),
+    "brown_h": (255, 255, 255),
+    "gray_l": (0, 10, 100),
+    "gray_h": (180, 30, 255),
+    "white_l": (0, 0, 168),
+    "white_h": (172, 111, 255),
+}
+
 
 def load_image(path, with_scale=False, target_scale=(0, 0)):
     image = cv2.imread(path)
@@ -78,3 +94,26 @@ def in_mask(image, area, mask):
     in_mask = area * mask_percent
 
     return int(mask_percent * 100), round(in_mask, 2)
+
+
+def process_image(
+    image,
+    green_mask=(default_masks["green_l"], default_masks["green_h"]),
+    brown_mask=(default_masks["brown_l"], default_masks["brown_h"]),
+    gray_mask=(default_masks["gray_l"], default_masks["gray_h"]),
+    white_mask=(default_masks["white_l"], default_masks["white_h"])
+):
+    enhanced_image = adaptive_histogram(image)
+
+    green_m = create_mask(enhanced_image, green_mask[0], green_mask[1])
+    brown_m = create_mask(enhanced_image, brown_mask[0], brown_mask[1])
+    gray_m = create_mask(enhanced_image, gray_mask[0], gray_mask[1])
+    white_m = create_mask(enhanced_image, white_mask[0], white_mask[1])
+
+    greens_mask = green_m + brown_m
+    buildings_mask = gray_m + white_m
+
+    greens = mask_image(enhanced_image, greens_mask, mask_colors["green"])
+    buildings = mask_image(enhanced_image, buildings_mask, mask_colors["gray"])
+
+    return greens, buildings

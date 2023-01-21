@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 
 import util
-import gui
 
 mask_colors = {
     "green": (87, 120, 4),
@@ -29,7 +28,8 @@ buildings_mask = gray_m + white_m
 buildings = util.mask_image(enhanced, buildings_mask, mask_colors["gray"])
 
 greens_percent, greens_area = util.in_mask(enhanced, area, greens_mask)
-buildings_percent, buildings_area = util.in_mask(enhanced, area, buildings_mask)
+buildings_percent, buildings_area = util.in_mask(
+    enhanced, area, buildings_mask)
 
 # Resize image for display (width, height)
 target_size = (852, 480)
