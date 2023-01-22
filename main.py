@@ -3,12 +3,7 @@ import numpy as np
 
 import util
 
-mask_colors = {
-    "green": (87, 120, 4),
-    "gray": (70, 63, 63),
-}
-
-image = cv2.imread("images/image_13.png")
+image = cv2.imread("images/image_9.png")
 
 # Get image real area (image, (pixels, dist))
 area = util.actual_area(image, (163, 100))
@@ -20,16 +15,15 @@ enhanced = util.adaptive_histogram(image)
 green_m = util.create_mask(enhanced, (36, 25, 25), (86, 255, 255))
 brown_m = util.create_mask(enhanced, (74, 74, 74), (255, 255, 255))
 greens_mask = green_m + brown_m
-greens = util.mask_image(enhanced, greens_mask, mask_colors["green"])
+greens = util.mask_image(enhanced, greens_mask, util.mask_colors["green"])
 
 gray_m = util.create_mask(enhanced, (0, 10, 100), (180, 30, 255))
 white_m = util.create_mask(enhanced, (0, 0, 168), (172, 111, 255))
 buildings_mask = gray_m + white_m
-buildings = util.mask_image(enhanced, buildings_mask, mask_colors["gray"])
+buildings = util.mask_image(enhanced, buildings_mask, util.mask_colors["gray"])
 
 greens_percent, greens_area = util.in_mask(enhanced, area, greens_mask)
-buildings_percent, buildings_area = util.in_mask(
-    enhanced, area, buildings_mask)
+buildings_percent, buildings_area = util.in_mask(enhanced, area, buildings_mask)
 
 # Resize image for display (width, height)
 target_size = (852, 480)

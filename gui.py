@@ -15,12 +15,44 @@ target_image_size = (656, 410)
 # 163px represents 100m
 image_params = (163, 100)
 
+data_area_value = 0.49
+data_green_value = 0.18
+data_build_value = 0.21
+data_others_value = 0.12
+
 
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        def update_raw_callback():
+        self.data_area_value = 0.00
+        self.data_green_value = 0.00
+        self.data_build_value = 0.00
+        self.data_others_value = 0.00
+
+        def update_data():
+            image = util.load_image(self._image)
+            (
+                self.data_area_value,
+                self.data_green_value,
+                self.data_build_value,
+                self.data_others_value,
+            ) = util.classification_data(image, image_params)
+
+            self.data_area.config(
+                text="Area: %.2f km\u00b2" % self.data_area_value,
+            )
+            self.data_green.config(
+                text="Greenery: %.2f km\u00b2" % self.data_green_value,
+            )
+            self.data_build.config(
+                text="Buildings: %.2f km\u00b2" % self.data_build_value,
+            )
+            self.data_others.config(
+                text="Others: %.2f km\u00b2" % self.data_others_value,
+            )
+
+        def update_raw_image():
             new_image = util.load_image(self._image, True, target_image_size)
             new_image = util.image_for_gui(new_image)
 
@@ -29,6 +61,7 @@ class App(tk.Tk):
 
         def update_processed_image():
             new_image = util.load_image(self._image, True, target_image_size)
+
             processed = util.process_image(new_image)
             processed = util.image_for_gui(processed)
 
@@ -44,8 +77,9 @@ class App(tk.Tk):
             if selected_file:
                 self._image = selected_file
                 # update image on GUI
-                update_raw_callback()
+                update_raw_image()
                 update_processed_image()
+                update_data()
 
         def update_slider(*_):
             # greenlh
@@ -94,6 +128,7 @@ class App(tk.Tk):
             self.grayuh_label.config(text="Upper Hue: %d" % util.mask_gray_u[0])
 
             update_processed_image()
+            update_data()
 
         self.title("Land Classification")
         self.geometry("{}x{}".format(app_width, app_height))
@@ -118,7 +153,6 @@ class App(tk.Tk):
         # program starts with image_1 loaded
         self._image = "images/image_1.png"
 
-        self.raw_image = util.load_image(self._image)
         self.scaled_image = util.load_image(self._image, True, target_image_size)
         self.raw_gui_image = util.image_for_gui(self.scaled_image)
         self.processed_gui_image = util.image_for_gui(
@@ -329,10 +363,6 @@ class App(tk.Tk):
         self.data_display.grid_columnconfigure(1, weight=1)
         self.data_display.grid(row=4, pady=(16, 0))
 
-        self.data_area_value = 0.49
-        self.data_green_value = 0.21
-        self.data_build_value = 0.18
-
         self.data_label = ttk.Label(
             self.data_display, text="Classification results:", font="bold"
         )
@@ -351,15 +381,24 @@ class App(tk.Tk):
             text="Buildings: %.2f km\u00b2" % self.data_build_value,
             font="bold",
         )
+        self.data_others = ttk.Label(
+            self.data_display,
+            text="Others: %.2f km\u00b2" % self.data_others_value,
+            font="bold",
+        )
+
+        update_data()
 
         self.data_label.grid(row=0, sticky="w")
         self.data_area.grid(row=1, columnspan=2, sticky="w")
         self.data_green.grid(row=2, columnspan=2, sticky="w")
         self.data_build.grid(row=3, columnspan=2, sticky="w")
+        self.data_others.grid(row=4, columnspan=2, sticky="w")
 
         # Keyboard functions
-        # Exit app with <Esc>
+        # Exit app with <Esc> or Q
         self.bind("<Escape>", lambda *_: self.quit())
+        self.bind("<q>", lambda *_: self.quit())
         # Open file dialog with o
         self.bind("<o>", lambda *_: open_filedialog())
 

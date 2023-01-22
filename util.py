@@ -94,9 +94,7 @@ def in_mask(image, area, mask):
     return int(mask_percent * 100), round(in_mask, 2)
 
 
-def process_image(
-    image,
-):
+def process_image(image):
     enhanced_image = adaptive_histogram(image)
 
     green_m = create_mask(enhanced_image, mask_green_l, mask_green_u)
@@ -113,3 +111,25 @@ def process_image(
     processing_out = greens + buildings
 
     return processing_out
+
+
+def classification_data(image, image_params):
+    area = actual_area(image, image_params)
+    enhanced_image = adaptive_histogram(image)
+
+    green_m = create_mask(enhanced_image, mask_green_l, mask_green_u)
+    brown_m = create_mask(enhanced_image, mask_brown_l, mask_brown_u)
+    gray_m = create_mask(enhanced_image, mask_gray_l, mask_gray_u)
+    white_m = create_mask(enhanced_image, mask_white_l, mask_white_u)
+
+    greens_mask = green_m + brown_m
+    builds_mask = gray_m + white_m
+
+    _, greens_area = in_mask(enhanced_image, area, greens_mask)
+    _, builds_area = in_mask(enhanced_image, area, builds_mask)
+    others = round(area - (greens_area + builds_area), 2)
+
+    if others < 0:
+        others = 0.00
+
+    return area, greens_area, builds_area, others
