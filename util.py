@@ -57,7 +57,7 @@ def actual_area(image, image_params):
     return round((a_width * a_height) / sq_m_km, 2)
 
 
-def adaptive_histogram(image):
+def clahe(image):
     lab_image = cv2.cvtColor(image.copy(), cv2.COLOR_BGR2LAB)
 
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
@@ -95,7 +95,7 @@ def in_mask(image, area, mask):
 
 
 def process_image(image):
-    enhanced_image = adaptive_histogram(image)
+    enhanced_image = clahe(image)
 
     green_m = create_mask(enhanced_image, mask_green_l, mask_green_u)
     brown_m = create_mask(enhanced_image, mask_brown_l, mask_brown_u)
@@ -115,7 +115,7 @@ def process_image(image):
 
 def classification_data(image, image_params):
     area = actual_area(image, image_params)
-    enhanced_image = adaptive_histogram(image)
+    enhanced_image = clahe(image)
 
     green_m = create_mask(enhanced_image, mask_green_l, mask_green_u)
     brown_m = create_mask(enhanced_image, mask_brown_l, mask_brown_u)

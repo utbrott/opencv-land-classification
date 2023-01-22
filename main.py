@@ -9,7 +9,7 @@ image = cv2.imread("images/image_9.png")
 area = util.actual_area(image, (163, 100))
 
 # Enhance the image
-enhanced = util.adaptive_histogram(image)
+enhanced = util.clahe(image)
 
 # Get greenery/buildings area
 green_m = util.create_mask(enhanced, (36, 25, 25), (86, 255, 255))
