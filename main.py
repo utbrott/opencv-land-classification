@@ -8,7 +8,7 @@ mask_colors = {
     "gray": (70, 63, 63),
 }
 
-image = cv2.imread("images/image_13.jpg")
+image = cv2.imread("images/image_13.png")
 
 # Get image real area (image, (pixels, dist))
 area = util.actual_area(image, (163, 100))

@@ -6,9 +6,6 @@ based on the land type.
 Included are 16 images, from various areas on Google Earth, each captures
 roughly 0.5km2 of area.
 
-Project uses [CustomTKinter](https://github.com/TomSchimansky/CustomTkinter) for
-it's GUI.
-
 ### Running without GUI:
 
 ```shell

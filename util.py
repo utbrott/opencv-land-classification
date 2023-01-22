@@ -7,16 +7,14 @@ mask_colors = {
     "gray": (70, 63, 63),
 }
 
-default_masks = {
-    "green_l": (36, 25, 25),
-    "green_h": (86, 255, 255),
-    "brown_l": (74, 74, 74),
-    "brown_h": (255, 255, 255),
-    "gray_l": (0, 10, 100),
-    "gray_h": (180, 30, 255),
-    "white_l": (0, 0, 168),
-    "white_h": (172, 111, 255),
-}
+mask_green_l = (36, 25, 25)
+mask_green_u = (86, 255, 255)
+mask_brown_l = (74, 74, 74)
+mask_brown_u = (180, 255, 255)
+mask_gray_l = (0, 10, 100)
+mask_gray_u = (179, 30, 255)
+mask_white_l = (0, 0, 168)
+mask_white_u = (172, 111, 255)
 
 
 def load_image(path, with_scale=False, target_scale=(0, 0)):
@@ -25,7 +23,7 @@ def load_image(path, with_scale=False, target_scale=(0, 0)):
     if with_scale:
         image = scale_image(image, target_scale)
 
-    return image_for_gui(image)
+    return image
 
 
 def image_for_gui(image):
@@ -98,17 +96,13 @@ def in_mask(image, area, mask):
 
 def process_image(
     image,
-    green_mask=(default_masks["green_l"], default_masks["green_h"]),
-    brown_mask=(default_masks["brown_l"], default_masks["brown_h"]),
-    gray_mask=(default_masks["gray_l"], default_masks["gray_h"]),
-    white_mask=(default_masks["white_l"], default_masks["white_h"])
 ):
     enhanced_image = adaptive_histogram(image)
 
-    green_m = create_mask(enhanced_image, green_mask[0], green_mask[1])
-    brown_m = create_mask(enhanced_image, brown_mask[0], brown_mask[1])
-    gray_m = create_mask(enhanced_image, gray_mask[0], gray_mask[1])
-    white_m = create_mask(enhanced_image, white_mask[0], white_mask[1])
+    green_m = create_mask(enhanced_image, mask_green_l, mask_green_u)
+    brown_m = create_mask(enhanced_image, mask_brown_l, mask_brown_u)
+    gray_m = create_mask(enhanced_image, mask_gray_l, mask_gray_u)
+    white_m = create_mask(enhanced_image, mask_white_l, mask_white_u)
 
     greens_mask = green_m + brown_m
     buildings_mask = gray_m + white_m
@@ -116,4 +110,6 @@ def process_image(
     greens = mask_image(enhanced_image, greens_mask, mask_colors["green"])
     buildings = mask_image(enhanced_image, buildings_mask, mask_colors["gray"])
 
-    return greens, buildings
+    processing_out = greens + buildings
+
+    return processing_out
