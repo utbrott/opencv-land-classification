@@ -32,7 +32,7 @@ scaled_input = util.scale_image(image, target_size)
 output = greens + buildings
 scaled_output = util.scale_image(output, target_size)
 
-cv2.imshow("Input + Output", np.hstack((scaled_input, scaled_output)))
+cv2.imshow("Input + Output", np.vstack((scaled_input, scaled_output)))
 
 # \u00b2 -> superscript 2
 print(f"Area in image: {area}km\u00b2")

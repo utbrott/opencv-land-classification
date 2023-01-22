@@ -103,12 +103,12 @@ def process_image(image):
     white_m = create_mask(enhanced_image, mask_white_l, mask_white_u)
 
     greens_mask = green_m + brown_m
-    buildings_mask = gray_m + white_m
+    builds_mask = gray_m + white_m
 
     greens = mask_image(enhanced_image, greens_mask, mask_colors["green"])
-    buildings = mask_image(enhanced_image, buildings_mask, mask_colors["gray"])
+    builds = mask_image(enhanced_image, builds_mask, mask_colors["gray"])
 
-    processing_out = greens + buildings
+    processing_out = greens + builds
 
     return processing_out
 
@@ -123,7 +123,7 @@ def classification_data(image, image_params):
     white_m = create_mask(enhanced_image, mask_white_l, mask_white_u)
 
     greens_mask = green_m + brown_m
-    builds_mask = gray_m + white_m
+    builds_mask = gray_m - white_m
 
     _, greens_area = in_mask(enhanced_image, area, greens_mask)
     _, builds_area = in_mask(enhanced_image, area, builds_mask)
